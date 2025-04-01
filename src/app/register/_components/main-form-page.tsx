@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
-import { Instagram } from "lucide-react";
+import { Instagram, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Logo from "../../../assets/logo.jpg";
 
@@ -36,6 +36,7 @@ export default function RegistrationPage() {
     const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
     const [showSuccessPopup, setShowSuccessPopup] = useState<boolean>(false);
     const [errors, setErrors] = useState<FormErrors>({});
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     useEffect(() => {
         // Check if user has already registered
@@ -111,9 +112,8 @@ export default function RegistrationPage() {
 
         if (!validateForm()) return;
 
-        // Show loading state
-        // You could add a loading state if needed
-        // setIsLoading(true);
+        // Set loading state to true
+        setIsLoading(true);
 
         try {
             // Prepare form data for the API
@@ -124,6 +124,7 @@ export default function RegistrationPage() {
             formDataToSubmit.append("age", formData.age);
 
             // Submit to Google Sheets API
+            // You can add multiple API calls here as needed
             const response = await fetch(
                 "https://script.google.com/macros/s/AKfycbyXVSZ0KHZV3cM2QyLTd-8e1eqDfkiLFGY6pe6TJldVnNYPqylydA6J1o4YczX-iPegOg/exec",
                 {
@@ -134,6 +135,11 @@ export default function RegistrationPage() {
             );
 
             console.log(response, "Registration data submitted:", formData);
+
+            // Example of multiple API calls
+            // You can add more API calls here as needed
+            // await fetch("https://your-second-api-endpoint.com", {...});
+            // await fetch("https://your-third-api-endpoint.com", {...});
 
             // Store in localStorage to prevent re-registration
             localStorage.setItem("cpl_registered", "true");
@@ -152,8 +158,8 @@ export default function RegistrationPage() {
             // You could show an error message to the user here
             // setErrorMessage('Failed to submit registration. Please try again.');
         } finally {
-            // Hide loading state if you added one
-            // setIsLoading(false);
+            // Hide loading state
+            setIsLoading(false);
         }
     };
 
@@ -190,6 +196,7 @@ export default function RegistrationPage() {
                                             ? "border-red-500"
                                             : "border-transparent"
                                     }`}
+                                    disabled={isLoading}
                                 />
                                 {errors.name && (
                                     <p className="text-red-300 text-sm mt-1">
@@ -212,6 +219,7 @@ export default function RegistrationPage() {
                                             ? "border-red-500"
                                             : "border-transparent"
                                     }`}
+                                    disabled={isLoading}
                                 />
                                 {errors.age && (
                                     <p className="text-red-300 text-sm mt-1">
@@ -234,6 +242,7 @@ export default function RegistrationPage() {
                                             ? "border-red-500"
                                             : "border-transparent"
                                     }`}
+                                    disabled={isLoading}
                                 />
                                 {errors.phoneNumber && (
                                     <p className="text-red-300 text-sm mt-1">
@@ -283,6 +292,7 @@ export default function RegistrationPage() {
                                         ? "bg-green-600 font-bold"
                                         : "bg-white/10"
                                 }`}
+                                                            disabled={isLoading}
                                                         >
                                                             {position.name}
                                                         </button>
@@ -295,9 +305,21 @@ export default function RegistrationPage() {
 
                             <button
                                 type="submit"
-                                className="w-full bg-yellow-500 hover:bg-yellow-600 text-green-900 font-bold py-3 px-4 rounded transition-colors"
+                                disabled={isLoading}
+                                className={`w-full bg-yellow-500 hover:bg-yellow-600 text-green-900 font-bold py-3 px-4 rounded transition-colors flex items-center justify-center ${
+                                    isLoading
+                                        ? "opacity-70 cursor-not-allowed"
+                                        : ""
+                                }`}
                             >
-                                Register Now
+                                {isLoading ? (
+                                    <>
+                                        <Loader2 className="animate-spin mr-2 h-5 w-5" />
+                                        Registering...
+                                    </>
+                                ) : (
+                                    "Register Now"
+                                )}
                             </button>
                         </form>
                     </>
