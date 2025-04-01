@@ -6,11 +6,9 @@ import Link from "next/link";
 import Logo from "../assets/logo.jpg";
 
 export default function HomePage() {
-    // Set countdown deadline (5 days from now)
-    const countdownDeadline = new Date();
-    countdownDeadline.setDate(countdownDeadline.getDate() + 5);
+    // Fixed deadline: April 5, 2025, 11:00 AM
+    const deadline = new Date("2025-04-05T11:00:00").getTime();
 
-    // State for timer
     const [timeLeft, setTimeLeft] = useState({
         days: 0,
         hours: 0,
@@ -21,7 +19,7 @@ export default function HomePage() {
     useEffect(() => {
         const updateTimer = () => {
             const now = new Date().getTime();
-            const distance = countdownDeadline.getTime() - now;
+            const distance = deadline - now;
 
             if (distance <= 0) {
                 setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -138,8 +136,6 @@ export default function HomePage() {
                         Register Now
                     </Link>
                 </div>
-
-                {/* Tournament details */}
             </div>
 
             {/* Footer */}
