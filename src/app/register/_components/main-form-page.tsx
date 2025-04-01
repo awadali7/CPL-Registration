@@ -3,7 +3,6 @@
 import { useState, useEffect, ChangeEvent, FormEvent } from "react";
 import { Instagram } from "lucide-react";
 import Image from "next/image";
-import Logo from "@/../public/logo.jpg";
 
 // TypeScript interfaces
 interface FormData {
@@ -163,7 +162,7 @@ export default function RegistrationPage() {
             <header className="p-4 flex flex-col items-center">
                 <div className="w-40 h-40 p-2 bg-white rounded-full flex items-center justify-center shadow-lg">
                     <div className="w-36 h-36 relative overflow-hidden rounded-full bg-green-700 flex items-center justify-center border-4 border-yellow-500">
-                        <Image src={Logo} alt="Logo" fill />
+                        <Image src="/logo.jpg" alt="Logo" fill />
                     </div>
                 </div>
             </header>
