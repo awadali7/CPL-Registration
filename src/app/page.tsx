@@ -61,7 +61,7 @@ export default function HomePage() {
                     <div className="w-28 h-28 sm:w-36 sm:h-36 md:w-48 md:h-48 p-2 bg-white rounded-full flex items-center justify-center shadow-lg mx-auto">
                         <div className="w-24 h-24 sm:w-32 sm:h-32 md:w-44 md:h-44 relative overflow-hidden rounded-full bg-green-700 flex items-center justify-center border-2 sm:border-3 md:border-4 border-yellow-500">
                             <Image
-                                src={require("@/../public/logo.jpg")}
+                                src={require("../../public/logo.jpg")}
                                 alt="Logo"
                                 fill
                                 priority
