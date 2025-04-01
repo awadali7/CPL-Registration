@@ -163,7 +163,7 @@ export default function RegistrationPage() {
                 <div className="w-40 h-40 p-2 bg-white rounded-full flex items-center justify-center shadow-lg">
                     <div className="w-36 h-36 relative overflow-hidden rounded-full bg-green-700 flex items-center justify-center border-4 border-yellow-500">
                         <Image
-                            src={require("../assets/logo.jpg")}
+                            src={require("../../../assets/logo.jpg")}
                             alt="Logo"
                             fill
                         />
