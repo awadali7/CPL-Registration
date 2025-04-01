@@ -162,7 +162,11 @@ export default function RegistrationPage() {
             <header className="p-4 flex flex-col items-center">
                 <div className="w-40 h-40 p-2 bg-white rounded-full flex items-center justify-center shadow-lg">
                     <div className="w-36 h-36 relative overflow-hidden rounded-full bg-green-700 flex items-center justify-center border-4 border-yellow-500">
-                        <Image src="/logo.jpg" alt="Logo" fill />
+                        <Image
+                            src={require("@/../public/logo.jpg")}
+                            alt="Logo"
+                            fill
+                        />
                     </div>
                 </div>
             </header>
