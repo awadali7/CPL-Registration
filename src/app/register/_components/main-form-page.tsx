@@ -309,6 +309,7 @@ function Field({
 
 export default function RegistrationPage() {
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const photoRef = useRef<HTMLDivElement>(null);
     const positionRef = useRef<HTMLDivElement>(null);
 
     const [formData, setFormData] = useState<FormData>({
@@ -367,7 +368,9 @@ export default function RegistrationPage() {
             if (isNaN(age) || age < 15 || age > 50) e.age = "Must be between 15 and 50";
         }
         setErrors(e);
-        if (e.position) {
+        if (e.photo) {
+            setTimeout(() => photoRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
+        } else if (e.position) {
             setTimeout(() => positionRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }), 50);
         }
         return Object.keys(e).length === 0;
@@ -460,7 +463,7 @@ export default function RegistrationPage() {
 
                                 <div className="p-5 sm:p-6 space-y-5">
                                     {/* Photo Upload */}
-                                    <div className="flex flex-col items-center py-2">
+                                    <div ref={photoRef} className="flex flex-col items-center py-2">
                                         <input
                                             ref={fileInputRef}
                                             type="file" accept="image/*"
