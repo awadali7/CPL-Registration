@@ -2,7 +2,6 @@
 
 import {
     useState,
-    useEffect,
     useRef,
     useCallback,
     ChangeEvent,
@@ -320,23 +319,47 @@ export default function RegistrationPage() {
     const [showDonate, setShowDonate] = useState(false);
     const [errors, setErrors] = useState<FormErrors>({});
     const [isLoading, setIsLoading] = useState(false);
-    const [savedData, setSavedData] = useState<FormData | null>(null);
+    const [isCheckingPhone, setIsCheckingPhone] = useState(false);
+    const [savedData, setSavedData] = useState<{
+        name: string; email: string; age: string;
+        phoneNumber: string; position: string; photo: string;
+    } | null>(null);
     const [rawImageSrc, setRawImageSrc] = useState<string | null>(null);
-
-    useEffect(() => {
-        const hasRegistered = localStorage.getItem("cpl_registered");
-        if (hasRegistered) {
-            setIsSubmitted(true);
-            const stored = localStorage.getItem("cpl_user_data");
-            if (stored) setSavedData(JSON.parse(stored));
-        }
-    }, []);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((p) => ({ ...p, [name]: value }));
         if (errors[name as keyof FormErrors])
             setErrors((p) => ({ ...p, [name]: undefined }));
+    };
+
+    const checkPhoneInSheet = async (phone: string): Promise<boolean> => {
+        try {
+            const res = await fetch(`/api/check-registration?phone=${encodeURIComponent(phone)}`);
+            const data = await res.json();
+            if (data.exists) {
+                setSavedData({
+                    name: data.data.name,
+                    email: data.data.email,
+                    age: data.data.age,
+                    phoneNumber: phone,
+                    position: data.data.position,
+                    photo: data.data.photoUrl ?? "",
+                });
+                setIsSubmitted(true);
+                return true;
+            }
+        } catch {
+            // fail silently — let submit proceed
+        }
+        return false;
+    };
+
+    const handlePhoneBlur = async () => {
+        if (!/^\d{10}$/.test(formData.phoneNumber)) return;
+        setIsCheckingPhone(true);
+        await checkPhoneInSheet(formData.phoneNumber);
+        setIsCheckingPhone(false);
     };
 
     const handlePositionSelect = (position: string) => {
@@ -381,6 +404,10 @@ export default function RegistrationPage() {
         if (!validateForm()) return;
         setIsLoading(true);
         try {
+            // Double-check phone against sheet before submitting
+            const alreadyRegistered = await checkPhoneInSheet(formData.phoneNumber);
+            if (alreadyRegistered) return;
+
             const fd = new FormData();
             fd.append("name", formData.name);
             fd.append("email", formData.email);
@@ -389,9 +416,14 @@ export default function RegistrationPage() {
             fd.append("age", formData.age);
             if (formData.photo) fd.append("photo", formData.photo);
             await fetch(APPS_SCRIPT_URL, { method: "POST", body: fd, mode: "no-cors" });
-            localStorage.setItem("cpl_registered", "true");
-            localStorage.setItem("cpl_user_data", JSON.stringify(formData));
-            setSavedData(formData);
+            setSavedData({
+                name: formData.name,
+                email: formData.email,
+                age: formData.age,
+                phoneNumber: formData.phoneNumber,
+                position: formData.position,
+                photo: formData.photo,
+            });
             setShowSuccessPopup(true);
             setIsSubmitted(true);
             setTimeout(() => { setShowSuccessPopup(false); setShowDonate(true); }, 5000);
@@ -595,15 +627,19 @@ export default function RegistrationPage() {
                                         </Field>
                                         <Field
                                             label="Phone"
-                                            icon={<Phone className="h-4 w-4" />}
+                                            icon={isCheckingPhone
+                                                ? <Loader2 className="h-4 w-4 animate-spin text-yellow-400" />
+                                                : <Phone className="h-4 w-4" />
+                                            }
                                             error={errors.phoneNumber}
                                         >
                                             <input
                                                 type="tel" name="phoneNumber"
                                                 value={formData.phoneNumber}
                                                 onChange={handleChange}
+                                                onBlur={handlePhoneBlur}
                                                 placeholder="10 digits"
-                                                disabled={isLoading}
+                                                disabled={isLoading || isCheckingPhone}
                                                 autoComplete="tel"
                                                 inputMode="numeric"
                                                 maxLength={10}

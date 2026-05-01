@@ -133,8 +133,40 @@ function buildRow(label, value, shaded) {
     + '</tr>';
 }
 
-// Health check
-function doGet() {
+// Health check + phone lookup
+function doGet(e) {
+  if (e && e.parameter && e.parameter.phone) {
+    var phone = e.parameter.phone.trim();
+    var ss    = SpreadsheetApp.openById(SPREADSHEET_ID);
+    var sheet = ss.getActiveSheet();
+    var lastRow = sheet.getLastRow();
+
+    if (lastRow > 1) {
+      // Columns: Timestamp(1) Name(2) Email(3) Age(4) Phone(5) Position(6) PhotoURL(7)
+      var rows = sheet.getRange(2, 1, lastRow - 1, 7).getValues();
+      for (var i = 0; i < rows.length; i++) {
+        if (String(rows[i][4]).trim() === phone) {
+          return ContentService
+            .createTextOutput(JSON.stringify({
+              exists: true,
+              data: {
+                name:     rows[i][1],
+                email:    rows[i][2],
+                age:      String(rows[i][3]),
+                position: rows[i][5],
+                photoUrl: rows[i][6]
+              }
+            }))
+            .setMimeType(ContentService.MimeType.JSON);
+        }
+      }
+    }
+
+    return ContentService
+      .createTextOutput(JSON.stringify({ exists: false }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
   return ContentService
     .createTextOutput(JSON.stringify({ status: "CPL Registration Script is live" }))
     .setMimeType(ContentService.MimeType.JSON);
