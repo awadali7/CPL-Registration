@@ -7,7 +7,7 @@ import Logo from "../assets/logo.jpg";
 
 export default function HomePage() {
     // Fixed deadline: April 5, 2025, 11:00 AM
-    const deadline = new Date("2025-04-05T11:00:00").getTime();
+    const deadline = new Date("2026-05-02T23:59:00").getTime();
 
     const [timeLeft, setTimeLeft] = useState({
         days: 0,
@@ -29,10 +29,10 @@ export default function HomePage() {
             setTimeLeft({
                 days: Math.floor(distance / (1000 * 60 * 60 * 24)),
                 hours: Math.floor(
-                    (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+                    (distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
                 ),
                 minutes: Math.floor(
-                    (distance % (1000 * 60 * 60)) / (1000 * 60)
+                    (distance % (1000 * 60 * 60)) / (1000 * 60),
                 ),
                 seconds: Math.floor((distance % (1000 * 60)) / 1000),
             });
@@ -79,7 +79,7 @@ export default function HomePage() {
                 {/* Season info */}
                 <div className="mb-6 sm:mb-8">
                     <p className="text-lg sm:text-xl md:text-2xl font-medium text-yellow-400">
-                        Season 2025
+                        Season 2026
                     </p>
                     <p className="text-base sm:text-lg md:text-xl mt-2 text-gray-300">
                         The Ultimate Football Experience
@@ -141,7 +141,7 @@ export default function HomePage() {
             {/* Footer */}
             <footer className="absolute bottom-0 w-full bg-black bg-opacity-70 py-2 sm:py-3 text-center z-10 text-xs sm:text-sm">
                 <p className="text-gray-400">
-                    © 2025 Chennarathadam Premier League. All Rights Reserved.
+                    © 2026 Chennarathadam Premier League. All Rights Reserved.
                 </p>
             </footer>
         </div>
